@@ -24,8 +24,8 @@ Frontend minimale in HTML, CSS e JavaScript puro, servito dallo stesso server.
 ## Avvio
 
 ```bash
-git clone https://github.com/<utente>/<repo>.git
-cd <repo>
+git clone https://github.com/NorthStarAxis/api-rubrica-clienti.git
+cd api-rubrica-clienti
 npm install
 ```
 
