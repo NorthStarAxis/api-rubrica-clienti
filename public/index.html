@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Rubrica clienti</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; }
+    li { margin-bottom: 8px; }
+    input { padding: 6px; margin-right: 6px; }
+    button { padding: 6px 12px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Rubrica clienti</h1>
+
+  <form id="form">
+    <input id="nome" placeholder="Nome" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <button>Aggiungi</button>
+  </form>
+
+  <ul id="lista"></ul>
+
+<script>
+const lista = document.getElementById('lista');
+
+async function carica() {
+  const risposta = await fetch('/api/clienti');
+  const clienti = await risposta.json();
+  lista.innerHTML = '';
+  clienti.forEach(c => {
+    const li = document.createElement('li');
+    li.textContent = `${c.nome} — ${c.email} `;
+    const btn = document.createElement('button');
+    btn.textContent = 'Elimina';
+    btn.onclick = () => elimina(c.id);
+    li.appendChild(btn);
+    lista.appendChild(li);
+  });
+}
+
+async function elimina(id) {
+  await fetch('/api/clienti/' + id, { method: 'DELETE' });
+  carica();
+}
+
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const nome = document.getElementById('nome').value;
+  const email = document.getElementById('email').value;
+
+  const risposta = await fetch('/api/clienti', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, email })
+  });
+
+  if (!risposta.ok) {
+    const dati = await risposta.json();
+    alert(dati.errore);
+    return;
+  }
+
+  e.target.reset();
+  carica();
+};
+
+carica();
+</script>
+</body>
+</html>
